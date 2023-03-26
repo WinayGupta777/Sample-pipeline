@@ -46,6 +46,7 @@ jobs:
       with:
         name: FromActions
         template: Template/CreateECR.yml
+        no-fail-on-empty-changeset: "1"
         parameter-overrides: >-
           EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
 
@@ -70,6 +71,7 @@ jobs:
       with:
         name: FromActions
         template: Template/CreateECSCluster.yml
+        no-fail-on-empty-changeset: "1"
         parameter-overrides: >-
           EcsClusterName=${{ steps.output-name.outputs.Ecs_Cluster_Name }}
           TaskExecutionArn=${{ secrets.TASK_EXECUTION_ARN }}

@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Configure environment name
       run: |
-        echo "ENV_ECR_REPO_NAME=my-ecr-repo" >> $GITHUB_ENV
+        echo "ENV_ECR_REPO_NAME=ecr-repo" >> $GITHUB_ENV
 
 
     - name: Checkout

@@ -1,0 +1,18 @@
+Parameters:
+  EcrRepoName:
+    Type: String
+    Description: "Specify Private Repository Name."
+
+
+Resources:
+  MyEcrRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref EcrRepoName
+      ImageScanningConfiguration: 
+        ScanOnPush: false
+
+
+Outputs:
+  ECRRepoName:
+    Value: !Ref MyEcrRepo

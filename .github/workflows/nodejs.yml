@@ -22,6 +22,11 @@ jobs:
       id: output-name
       run: |
         echo "ECR_REPO_NAME=my-ecr-repo" >> $GITHUB_OUTPUT
+        echo "Ecs_Cluster_Name=my-cluster" >> $GITHUB_OUTPUT
+        echo "Ecs_Service_Name=farget-service" >> $GITHUB_OUTPUT
+        echo "App_Container_Port=80" >> $GITHUB_OUTPUT
+        echo "App_Host_Port=80" >> $GITHUB_OUTPUT
+        echo "App_Name=demo-app" >> $GITHUB_OUTPUT
 
 
     - name: Checkout
@@ -59,3 +64,18 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: "[CloudFormation] Deploy ECS Cluster"
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: FromActions
+        template: Template/CreateECSCluster.yml
+        parameter-overrides: >-
+          EcsClusterName=${{ steps.output-name.outputs.Ecs_Cluster_Name }}
+          TaskExecutionArn=${{ secrets.TASK_EXECUTION_ARN }}
+          EcsServiceName=${{ steps.output-name.outputs.Ecs_Service_Name }}
+          AppContainerPort=${{ steps.output-name.outputs.App_Container_Port }}
+          AppHostPort=${{ steps.output-name.outputs.App_Host_Port }}
+          AppName=${{ steps.output-name.outputs.App_Name }}
+          SecurityGroupId=${{ secrets.SEC_GROUP_ID }}
+          ContainerImage=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

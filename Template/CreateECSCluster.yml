@@ -1,0 +1,74 @@
+Parameters:
+  EcsClusterName:
+    Type: String
+    Description: "Specify ECS Cluster Name."
+  EcsServiceName:
+    Type: String
+    Description: "Specify ECS Cluster Service Name."
+  ContainerImage:
+    Type: String
+    Description: "Specify Container Image name."
+  AppHostPort:   
+    Type: String
+    Description: "Specify Host Port."
+  AppContainerPort:
+    Type: String
+    Description: "Specify Container Port."
+  TaskExecutionArn:
+    Type: String
+    Description: "Specify Task Execution ARN."
+  AppName:
+    Type: String
+    Description: "Specify Container name."
+  SecurityGroupId:
+    Type: String
+    Description: "Specify Security group id."
+
+
+Resources:
+  MyEcsCluster:
+    Type: AWS::ECS::Cluster
+    Properties: 
+      ClusterName: !Ref EcsClusterName
+
+  TaskDefFarget:  
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      NetworkMode: awsvpc
+      Family: !Ref EcsServiceName
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 512
+      RuntimePlatform:
+        CpuArchitecture: X86_64
+        OperatingSystemFamily: LINUX
+      ExecutionRoleArn: !Ref TaskExecutionArn
+      ContainerDefinitions: 
+        - 
+          Name: !Ref AppName
+          Image: !Ref ContainerImage
+          Cpu: 256
+          Memory: 512
+          PortMappings: 
+            - 
+              ContainerPort: !Ref AppContainerPort
+              HostPort: !Ref AppHostPort
+
+  MyEcsService: 
+    Type: AWS::ECS::Service
+    Properties:
+      ServiceName: !Ref EcsServiceName
+      Cluster: !Ref MyEcsCluster
+      LaunchType: FARGATE
+      DesiredCount: 2
+      TaskDefinition: !Ref TaskDefFarget
+      NetworkConfiguration:
+        AwsvpcConfiguration: 
+          AssignPublicIp: ENABLED
+          SecurityGroups:
+           - !Ref SecurityGroupId
+          Subnets:
+            - subnet-0148f0eec529ca92f
+            - subnet-0c4347797ad56c932
+            - subnet-04d651a62025dcd5f

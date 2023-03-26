@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Configure environment name
       run: |
-        echo "ENV_ECR_REPO_NAME=ecr-repo" >> $GITHUB_ENV
+        echo "ECR-REPO-NAME=ecr-repo" >> $GITHUB_ENV
 
 
     - name: Checkout
@@ -41,7 +41,7 @@ jobs:
         name: FromActions
         template: Template/CreateECR.yml
         parameter-overrides: >-
-          EcrRepoName=$ENV_ECR_REPO_NAME
+          EcrRepoName=$ECR-REPO-NAME
 
 
     - name: Login to Amazon ECR

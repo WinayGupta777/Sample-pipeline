@@ -18,9 +18,10 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Configure environment name
+    - name: Set environment name
+      id: output-name
       run: |
-        echo "ECR-REPO-NAME=ecr-repo" >> $GITHUB_ENV
+        echo "ECR_REPO_NAME=my-ecr-repo" >> $GITHUB_OUTPUT
 
 
     - name: Checkout
@@ -41,7 +42,7 @@ jobs:
         name: FromActions
         template: Template/CreateECR.yml
         parameter-overrides: >-
-          EcrRepoName="my-ecr-repo"
+          EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
 
 
     # - name: Login to Amazon ECR

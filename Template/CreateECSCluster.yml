@@ -9,11 +9,13 @@ Parameters:
     Type: String
     Description: "Specify Container Image name."
   AppHostPort:   
-    Type: String
+    Type: Number
     Description: "Specify Host Port."
+    Default: 80
   AppContainerPort:
-    Type: String
+    Type: Number
     Description: "Specify Container Port."
+    Default: 80
   TaskExecutionArn:
     Type: String
     Description: "Specify Task Execution ARN."

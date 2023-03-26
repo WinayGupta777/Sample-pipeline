@@ -58,11 +58,14 @@ jobs:
         registry-type: private
 
     - name: Build, tag, and push docker image to Amazon ECR
+      id: output-image-uri
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ steps.output-name.outputs.ECR_REPO_NAME }}
         IMAGE_TAG: latest
       run: |
+        echo "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
@@ -80,4 +83,4 @@ jobs:
           AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
           AppName=${{ steps.output-name.outputs.App_Name }},
           SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
-          ContainerImage=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          ContainerImage=${{ steps.output-image-uri.ImageURI }}

@@ -14,5 +14,6 @@ Resources:
 
 
 Outputs:
-  ECRRepoName:
-    Value: !Ref MyEcrRepo
+  RepoURI:
+    Value: !GetAtt MyEcrRepo.RepositoryUri
+    Description: Returns the URI for the MyEcrRepo.

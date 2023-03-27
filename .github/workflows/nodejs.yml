@@ -112,5 +112,7 @@ jobs:
           SvcRole2Ecs=${{ secrets.AWS_SERVICE_ROLE_FOR_ECS }},
           myTargetGroup=${{ steps.alb-output.outputs.TargetGroupArn }},
           subnetAId=${{ steps.vpc-output.outputs.subnetAId }},
-          subnetBId=${{ steps.vpc-output.outputs.subnetBId }},
+          subnetBId=${{ steps.vpc-output.outputs.subnetBId }}
+
+          
     # ContainerImage=${{ steps.output-image-uri.outputs.ImageURI }}

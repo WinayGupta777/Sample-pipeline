@@ -86,7 +86,7 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: stack2
-        template: Template/CreateECSCluster.yml
+        template: Template/CreateALB.yml
         no-fail-on-empty-changeset: "1"
         parameter-overrides: >-
           myVpcId=${{ steps.vpc-output.outputs.vpcid }},

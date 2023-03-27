@@ -44,7 +44,7 @@ jobs:
     - name: "[CloudFormation] Deploy VPC components"
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: FromActions
+        name: stack1
         template: Template/CreateVpcComponents.yml
         no-fail-on-empty-changeset: "1"
 
@@ -52,7 +52,7 @@ jobs:
     - name: "[CloudFormation] Deploy ECR Repo"
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: FromActions
+        name: stack2
         template: Template/CreateECR.yml
         no-fail-on-empty-changeset: "1"
         parameter-overrides: >-

@@ -51,8 +51,9 @@ jobs:
 
     - name: Wathc output
       run: |
-        echo ${{ steps.vpc-output.outputs }}
-        echo $vpc-output
+        echo ${{ steps.vpc-output.outputs.vpcid }}
+        echo ${{ steps.vpc-output.outputs.igwid }}
+        echo ${vpc-output}
     # - name: "[CloudFormation] Deploy ECR Repo"
     #   uses: aws-actions/aws-cloudformation-github-deploy@v1
     #   with:

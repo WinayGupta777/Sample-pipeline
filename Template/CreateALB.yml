@@ -1,0 +1,59 @@
+Parameters:
+  VpcName:
+    Type: String
+    Description: "Give VPC name."
+    Default: "new-vpc"
+  mySubAId:
+    Type: String
+    Description: "Give subnet id."
+  mySubBId:
+    Type: String
+    Description: "Give subnet id."
+
+Resources:
+  mySGforALB:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Allow all traffic
+      GroupName: AllAllow
+      VpcId: !Ref myVpc
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+
+  myALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      Type: application
+      IpAddressType: ipv4
+      Scheme: internet-facing
+      SecurityGroups: 
+        - !Ref mySGforALB
+      Subnets: 
+        - !Ref mySubAId
+        - !Ref mySubBId
+      Tags: 
+        - Key: Name
+          Value: ALB
+
+  myALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref myALB
+      Protocol: HTTP
+      Port: 80
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+
+  ALBTargetGroup:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Name: MyTargets
+      Port: 80
+      Protocol: HTTP
+      ProtocolVersion: HTTP1
+      VpcId: !Ref myVpc
+      TargetType: ip

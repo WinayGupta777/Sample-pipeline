@@ -1,0 +1,110 @@
+Parameters:
+  VpcName:
+    Type: String
+    Description: "Give VPC name."
+    Default: "new-vpc"
+  IgwName:
+    Type: String
+    Description: "Give InternetGateway name."
+    Default: "new-igw"
+  SubAName:
+    Type: String
+    Description: "Give InternetGateway name."
+    Default: "subnet-1a"
+  SubBName:
+    Type: String
+    Description: "Give InternetGateway name."
+    Default: "subnet-1b"
+
+
+
+Resources:
+  myVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Ref VpcName
+          
+  myIgw:
+    Type: AWS::EC2::InternetGateway
+    Properties: 
+      Tags: 
+        - Key: Name
+          Value: !Ref IgwName
+          
+  AttachVpcAndIgw:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      VpcId: !Ref myVpc
+      InternetGatewayId: !Ref myIgw
+          
+  mySub1A:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: !Ref SubAName
+          
+  mySub1B:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: 10.0.2.0/24
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: !Ref SubBName
+
+  myRT4Sub:  
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: route-table-sub
+          
+  myRouteToWorld:      
+    Type: AWS::EC2::Route
+    DependsOn: myIgw
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref myIgw
+      RouteTableId: !Ref myRT4Sub
+
+  SubAtoRT: 
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref myRT4Sub
+      SubnetId: !Ref mySub1A
+
+  SubBtoRT: 
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref myRT4Sub
+      SubnetId: !Ref mySub1B
+
+
+Outputs:
+  vpcid:
+    Value: !Ref myVpc
+    Description: Returns vpc Id.
+  
+  igwid:
+    Value: !Ref myIgw
+    Description: Returns InternetGateway Id.
+    
+  subnetAId:
+    Value: !Ref mySub1A
+    Description: Returns subnet id.
+
+  subnetBId:
+    Value: !Ref mySub1B
+    Description: Returns subnet id.

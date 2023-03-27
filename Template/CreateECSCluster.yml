@@ -85,7 +85,6 @@ Resources:
           Subnets:
             - !Ref subnetAId
             - !Ref subnetBId
-      Role: !Ref SvcRole2Ecs
       LoadBalancers:
         - TargetGroupArn: !Ref myTargetGroup
           ContainerPort: !Ref AppContainerPort

@@ -42,21 +42,25 @@ jobs:
 
 
     - name: "[CloudFormation] Deploy VPC components"
+      id: vpc-output
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: stack1
         template: Template/CreateVpcComponents.yml
         no-fail-on-empty-changeset: "1"
 
-
-    - name: "[CloudFormation] Deploy ECR Repo"
-      uses: aws-actions/aws-cloudformation-github-deploy@v1
-      with:
-        name: stack2
-        template: Template/CreateECR.yml
-        no-fail-on-empty-changeset: "1"
-        parameter-overrides: >-
-          EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
+    - name: Wathc output
+      run: |
+        echo ${{ steps.vpc-output.outputs }}
+        echo $vpc-output
+    # - name: "[CloudFormation] Deploy ECR Repo"
+    #   uses: aws-actions/aws-cloudformation-github-deploy@v1
+    #   with:
+    #     name: stack2
+    #     template: Template/CreateECR.yml
+    #     no-fail-on-empty-changeset: "1"
+    #     parameter-overrides: >-
+    #       EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
 
 
     # - name: Login to Amazon ECR

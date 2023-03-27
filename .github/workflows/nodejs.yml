@@ -81,6 +81,19 @@ jobs:
     #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     #     echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+    - name: "[CloudFormation] Deploy ALB Things"
+      id: alb-output
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: stack2
+        template: Template/CreateECSCluster.yml
+        no-fail-on-empty-changeset: "1"
+        parameter-overrides: >-
+          myVpcId=${{ steps.vpc-output.outputs.vpcid }},
+          mySubAId=${{ steps.vpc-output.outputs.subnetAId }},
+          mySubBId=${{ steps.vpc-output.outputs.subnetBId }}
+
+
     - name: "[CloudFormation] Deploy ECS Cluster"
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
@@ -95,5 +108,9 @@ jobs:
           AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
           AppName=${{ steps.output-name.outputs.App_Name }},
           SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
-          ContainerImage="httpd"
+          ContainerImage="httpd",
+          SvcRole2Ecs=${{ secrets.AWS_SERVICE_ROLE_FOR_ECS }}
+          myTargetGroup=${{ steps.alb-output.outputs.TargetGroupArn }},
+          subnetAId=${{ steps.vpc-output.outputs.subnetAId }},
+          subnetBId=${{ steps.vpc-output.outputs.subnetBId }},
     # ContainerImage=${{ steps.output-image-uri.outputs.ImageURI }}

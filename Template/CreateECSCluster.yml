@@ -25,6 +25,18 @@ Parameters:
   SecurityGroupId:
     Type: String
     Description: "Specify Security group id."
+  SvcRole2Ecs:
+    Type: String
+    Description: "Specify Role arn."
+  myTargetGroup:
+    Type: String
+    Description: "Specify Target Group id."
+  subnetAId:
+    Type: String
+    Description: "Specify subnetA id."
+  subnetBId:
+    Type: String
+    Description: "Specify subnetB id."
 
 
 Resources:
@@ -71,6 +83,10 @@ Resources:
           SecurityGroups:
            - !Ref SecurityGroupId
           Subnets:
-            - subnet-0148f0eec529ca92f
-            - subnet-0c4347797ad56c932
-            - subnet-04d651a62025dcd5f
+            - !Ref subnetAId
+            - !Ref subnetBId
+      Role: !Ref SvcRole2Ecs
+      LoadBalancers:
+        - TargetGroupArn: !Ref myTargetGroup
+          ContainerPort: !Ref AppContainerPort
+          ContainerName: !Ref AppName

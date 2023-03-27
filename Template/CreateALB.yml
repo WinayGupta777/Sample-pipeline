@@ -1,8 +1,7 @@
 Parameters:
-  VpcName:
+  myVpcId:
     Type: String
     Description: "Give VPC name."
-    Default: "new-vpc"
   mySubAId:
     Type: String
     Description: "Give subnet id."
@@ -16,7 +15,7 @@ Resources:
     Properties: 
       GroupDescription: Allow all traffic
       GroupName: AllAllow
-      VpcId: !Ref myVpc
+      VpcId: !Ref myVpcId
       SecurityGroupIngress: 
         - IpProtocol: tcp
           FromPort: 0
@@ -55,5 +54,32 @@ Resources:
       Port: 80
       Protocol: HTTP
       ProtocolVersion: HTTP1
-      VpcId: !Ref myVpc
+      VpcId: !Ref myVpcId
       TargetType: ip
+
+  mySGforBoxes:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Allow http client only
+      GroupName: Allow80
+      VpcId: !Ref myVpcId
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+
+Outputs:
+  AlbArn:
+    Value: !Ref myALB
+    Description: Returns ARN of LB.
+  ListnerArn:
+    Value: !Ref myALBListener
+    Description: Returns ARN of Listners.
+  TargetGroupArn:
+    Value: !Ref ALBTargetGroup
+    Description: Returns ARN of TG.
+  BoxSgId:
+    Value: !Ref mySGforBoxes
+    Description: Returns Id of Container SG.

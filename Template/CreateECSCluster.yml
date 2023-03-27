@@ -25,9 +25,6 @@ Parameters:
   SecurityGroupId:
     Type: String
     Description: "Specify Security group id."
-  SvcRole2Ecs:
-    Type: String
-    Description: "Specify Role arn."
   myTargetGroup:
     Type: String
     Description: "Specify Target Group id."

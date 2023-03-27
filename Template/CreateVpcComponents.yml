@@ -101,10 +101,10 @@ Outputs:
     Value: !Ref myIgw
     Description: Returns InternetGateway Id.
     
-  subnetAId:
-    Value: !Ref mySub1A
-    Description: Returns subnet id.
+  # subnetAId:
+  #   Value: !Ref mySub1A
+  #   Description: Returns subnet id.
 
-  subnetBId:
-    Value: !Ref mySub1B
-    Description: Returns subnet id.
+  # subnetBId:
+  #   Value: !Ref mySub1B
+  #   Description: Returns subnet id.

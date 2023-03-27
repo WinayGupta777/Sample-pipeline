@@ -18,15 +18,15 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - name: Set environment name
-      id: output-name
+    - name: Set output variables
+      id: const-output
       run: |
         echo "ECR_REPO_NAME=my-ecr-repo" >> $GITHUB_OUTPUT
-        echo "Ecs_Cluster_Name=my-cluster" >> $GITHUB_OUTPUT
-        echo "Ecs_Service_Name=farget-service" >> $GITHUB_OUTPUT
-        echo "App_Container_Port=80" >> $GITHUB_OUTPUT
-        echo "App_Host_Port=80" >> $GITHUB_OUTPUT
-        echo "App_Name=demo-app" >> $GITHUB_OUTPUT
+        echo "ECS_CLUSTER_NAME=my-cluster" >> $GITHUB_OUTPUT
+        echo "ECS_SERVICE_NAME=farget-service" >> $GITHUB_OUTPUT
+        echo "APP_CONTAINER_PORT=80" >> $GITHUB_OUTPUT
+        echo "APP_HOST_PORT=80" >> $GITHUB_OUTPUT
+        echo "APP_NAME=demo-app" >> $GITHUB_OUTPUT
 
 
     - name: Checkout
@@ -48,38 +48,36 @@ jobs:
         name: stack1
         template: Template/CreateVpcComponents.yml
         no-fail-on-empty-changeset: "1"
+   
 
-    # - name: Wathc output
-    #   run: |
-    #     echo ${{ steps.vpc-output.outputs.vpcid }}
-    #     echo ${{ steps.vpc-output.outputs.igwid }}
-    #     echo ${vpc-output}
-    
-    # - name: "[CloudFormation] Deploy ECR Repo"
-    #   uses: aws-actions/aws-cloudformation-github-deploy@v1
-    #   with:
-    #     name: stack2
-    #     template: Template/CreateECR.yml
-    #     no-fail-on-empty-changeset: "1"
-    #     parameter-overrides: >-
-    #       EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
+    - name: "[CloudFormation] Deploy ECR Repo"
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: stack2
+        template: Template/CreateECR.yml
+        no-fail-on-empty-changeset: "1"
+        parameter-overrides: >-
+          EcrRepoName=${{ steps.const-output.outputs.ECR_REPO_NAME }}
 
-    # - name: Login to Amazon ECR
-    #   id: login-ecr
-    #   uses: aws-actions/amazon-ecr-login@v1
-    #   with:
-    #     registry-type: private
 
-    # - name: Build, tag, and push docker image to Amazon ECR
-    #   id: output-image-uri
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     ECR_REPOSITORY: ${{ steps.output-name.outputs.ECR_REPO_NAME }}
-    #     IMAGE_TAG: latest
-    #   run: |
-    #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    #     echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: private
+
+
+    - name: Build, tag, and push docker image to Amazon ECR
+      id: uri-output
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ steps.const-output.outputs.ECR_REPO_NAME }}
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
 
     - name: "[CloudFormation] Deploy ALB Things"
       id: alb-output
@@ -101,17 +99,18 @@ jobs:
         template: Template/CreateECSCluster.yml
         no-fail-on-empty-changeset: "1"
         parameter-overrides: >-
-          EcsClusterName=${{ steps.output-name.outputs.Ecs_Cluster_Name }},
+          EcsClusterName=${{ steps.const-output.outputs.ECS_CLUSTER_NAME }},
           TaskExecutionArn=${{ secrets.TASK_EXECUTION_ARN }},
-          EcsServiceName=${{ steps.output-name.outputs.Ecs_Service_Name }},
-          AppContainerPort=${{ steps.output-name.outputs.App_Container_Port }},
-          AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
-          AppName=${{ steps.output-name.outputs.App_Name }},
+          EcsServiceName=${{ steps.const-output.outputs.ECS_SERVICE_NAME }},
+          AppContainerPort=${{ steps.const-output.outputs.APP_CONTAINER_PORT }},
+          AppHostPort=${{ steps.const-output.outputs.APP_HOST_PORT }},
+          AppName=${{ steps.const-output.outputs.APP_NAME }},
           SecurityGroupId=${{ steps.alb-output.outputs.BoxSgId }},
-          ContainerImage="httpd",
+          ContainerImage=${{ steps.uri-output.outputs.ImageURI }},
           myTargetGroup=${{ steps.alb-output.outputs.TargetGroupArn }},
           subnetAId=${{ steps.vpc-output.outputs.subnetAId }},
           subnetBId=${{ steps.vpc-output.outputs.subnetBId }}
 
-
-    # ContainerImage=${{ steps.output-image-uri.outputs.ImageURI }}
+    - name: "✅ All Set Boss !!"
+      run: |
+        echo "Containers, magic boxes !! 🎁"

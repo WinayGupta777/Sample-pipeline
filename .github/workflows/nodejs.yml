@@ -107,7 +107,7 @@ jobs:
           AppContainerPort=${{ steps.output-name.outputs.App_Container_Port }},
           AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
           AppName=${{ steps.output-name.outputs.App_Name }},
-          SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
+          SecurityGroupId=${{ steps.alb-output.outputs.BoxSgId }},
           ContainerImage="httpd",
           myTargetGroup=${{ steps.alb-output.outputs.TargetGroupArn }},
           subnetAId=${{ steps.vpc-output.outputs.subnetAId }},

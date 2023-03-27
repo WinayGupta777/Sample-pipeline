@@ -109,7 +109,7 @@ jobs:
           AppName=${{ steps.output-name.outputs.App_Name }},
           SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
           ContainerImage="httpd",
-          SvcRole2Ecs=${{ secrets.AWS_SERVICE_ROLE_FOR_ECS }}
+          SvcRole2Ecs=${{ secrets.AWS_SERVICE_ROLE_FOR_ECS }},
           myTargetGroup=${{ steps.alb-output.outputs.TargetGroupArn }},
           subnetAId=${{ steps.vpc-output.outputs.subnetAId }},
           subnetBId=${{ steps.vpc-output.outputs.subnetBId }},

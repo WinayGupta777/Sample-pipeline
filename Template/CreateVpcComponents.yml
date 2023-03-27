@@ -43,53 +43,53 @@ Resources:
       VpcId: !Ref myVpc
       InternetGatewayId: !Ref myIgw
           
-  # mySub1A:
-  #   Type: AWS::EC2::Subnet
-  #   Properties: 
-  #     AvailabilityZone: !Select [ 0, !GetAZs ]
-  #     CidrBlock: 10.0.1.0/24
-  #     VpcId: !Ref myVpc
-  #     Tags: 
-  #       - Key: Name
-  #         Value: !Ref SubAName
+  mySub1A:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: !Ref SubAName
           
-  # mySub1B:
-  #   Type: AWS::EC2::Subnet
-  #   Properties: 
-  #     AvailabilityZone: !Select [ 1, !GetAZs ]
-  #     CidrBlock: 10.0.2.0/24
-  #     VpcId: !Ref myVpc
-  #     Tags: 
-  #       - Key: Name
-  #         Value: !Ref SubBName
+  mySub1B:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: 10.0.2.0/24
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: !Ref SubBName
 
-  # myRT4Sub:  
-  #   Type: AWS::EC2::RouteTable
-  #   Properties: 
-  #     VpcId: !Ref myVpc
-  #     Tags: 
-  #       - Key: Name
-  #         Value: route-table-sub
+  myRT4Sub:  
+    Type: AWS::EC2::RouteTable
+    Properties: 
+      VpcId: !Ref myVpc
+      Tags: 
+        - Key: Name
+          Value: route-table-sub
           
-  # myRouteToWorld:      
-  #   Type: AWS::EC2::Route
-  #   DependsOn: myIgw
-  #   Properties: 
-  #     DestinationCidrBlock: 0.0.0.0/0
-  #     GatewayId: !Ref myIgw
-  #     RouteTableId: !Ref myRT4Sub
+  myRouteToWorld:      
+    Type: AWS::EC2::Route
+    DependsOn: myIgw
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref myIgw
+      RouteTableId: !Ref myRT4Sub
 
-  # SubAtoRT: 
-  #   Type: AWS::EC2::SubnetRouteTableAssociation
-  #   Properties: 
-  #     RouteTableId: !Ref myRT4Sub
-  #     SubnetId: !Ref mySub1A
+  SubAtoRT: 
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref myRT4Sub
+      SubnetId: !Ref mySub1A
 
-  # SubBtoRT: 
-  #   Type: AWS::EC2::SubnetRouteTableAssociation
-  #   Properties: 
-  #     RouteTableId: !Ref myRT4Sub
-  #     SubnetId: !Ref mySub1B
+  SubBtoRT: 
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref myRT4Sub
+      SubnetId: !Ref mySub1B
 
 
 Outputs:
@@ -101,10 +101,10 @@ Outputs:
     Value: !Ref myIgw
     Description: Returns InternetGateway Id.
     
-  # subnetAId:
-  #   Value: !Ref mySub1A
-  #   Description: Returns subnet id.
+  subnetAId:
+    Value: !Ref mySub1A
+    Description: Returns subnet id.
 
-  # subnetBId:
-  #   Value: !Ref mySub1B
-  #   Description: Returns subnet id.
+  subnetBId:
+    Value: !Ref mySub1B
+    Description: Returns subnet id.

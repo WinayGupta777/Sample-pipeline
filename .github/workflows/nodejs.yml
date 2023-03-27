@@ -49,11 +49,12 @@ jobs:
         template: Template/CreateVpcComponents.yml
         no-fail-on-empty-changeset: "1"
 
-    - name: Wathc output
-      run: |
-        echo ${{ steps.vpc-output.outputs.vpcid }}
-        echo ${{ steps.vpc-output.outputs.igwid }}
-        echo ${vpc-output}
+    # - name: Wathc output
+    #   run: |
+    #     echo ${{ steps.vpc-output.outputs.vpcid }}
+    #     echo ${{ steps.vpc-output.outputs.igwid }}
+    #     echo ${vpc-output}
+    
     # - name: "[CloudFormation] Deploy ECR Repo"
     #   uses: aws-actions/aws-cloudformation-github-deploy@v1
     #   with:
@@ -62,7 +63,6 @@ jobs:
     #     no-fail-on-empty-changeset: "1"
     #     parameter-overrides: >-
     #       EcrRepoName=${{ steps.output-name.outputs.ECR_REPO_NAME }}
-
 
     # - name: Login to Amazon ECR
     #   id: login-ecr
@@ -81,18 +81,19 @@ jobs:
     #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     #     echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # - name: "[CloudFormation] Deploy ECS Cluster"
-      # uses: aws-actions/aws-cloudformation-github-deploy@v1
-      # with:
-      #   name: FromActions
-      #   template: Template/CreateECSCluster.yml
-      #   no-fail-on-empty-changeset: "1"
-      #   parameter-overrides: >-
-      #     EcsClusterName=${{ steps.output-name.outputs.Ecs_Cluster_Name }},
-      #     TaskExecutionArn=${{ secrets.TASK_EXECUTION_ARN }},
-      #     EcsServiceName=${{ steps.output-name.outputs.Ecs_Service_Name }},
-      #     AppContainerPort=${{ steps.output-name.outputs.App_Container_Port }},
-      #     AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
-      #     AppName=${{ steps.output-name.outputs.App_Name }},
-      #     SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
-      #     ContainerImage=${{ steps.output-image-uri.outputs.ImageURI }}
+    - name: "[CloudFormation] Deploy ECS Cluster"
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: stack3
+        template: Template/CreateECSCluster.yml
+        no-fail-on-empty-changeset: "1"
+        parameter-overrides: >-
+          EcsClusterName=${{ steps.output-name.outputs.Ecs_Cluster_Name }},
+          TaskExecutionArn=${{ secrets.TASK_EXECUTION_ARN }},
+          EcsServiceName=${{ steps.output-name.outputs.Ecs_Service_Name }},
+          AppContainerPort=${{ steps.output-name.outputs.App_Container_Port }},
+          AppHostPort=${{ steps.output-name.outputs.App_Host_Port }},
+          AppName=${{ steps.output-name.outputs.App_Name }},
+          SecurityGroupId=${{ secrets.SEC_GROUP_ID }},
+          ContainerImage="httpd"
+    # ContainerImage=${{ steps.output-image-uri.outputs.ImageURI }}

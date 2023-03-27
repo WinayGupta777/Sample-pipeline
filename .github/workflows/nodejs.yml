@@ -83,7 +83,7 @@ jobs:
       id: alb-output
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: stack2
+        name: stack3
         template: Template/CreateALB.yml
         no-fail-on-empty-changeset: "1"
         parameter-overrides: >-
@@ -95,7 +95,7 @@ jobs:
     - name: "[CloudFormation] Deploy ECS Cluster"
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: stack3
+        name: stack4
         template: Template/CreateECSCluster.yml
         no-fail-on-empty-changeset: "1"
         parameter-overrides: >-

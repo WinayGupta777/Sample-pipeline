@@ -91,6 +91,10 @@ jobs:
           mySubAId=${{ steps.vpc-output.outputs.subnetAId }},
           mySubBId=${{ steps.vpc-output.outputs.subnetBId }}
 
+    - name: Removing Old ECS Cluster
+      run: |
+        aws cloudformation delete-stack --stack-name stack4
+        aws cloudformation wait stack-delete-complete --stack-name stack4 || true
 
     - name: "[CloudFormation] Deploy ECS Cluster"
       uses: aws-actions/aws-cloudformation-github-deploy@v1

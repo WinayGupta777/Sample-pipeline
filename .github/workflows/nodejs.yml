@@ -79,7 +79,7 @@ jobs:
         echo "ImageURI=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
 
-    - name: "[CloudFormation] Deploy ALB Things"
+    - name: "[CloudFormation] Deploy ALB components"
       id: alb-output
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:

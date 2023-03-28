@@ -72,7 +72,7 @@ Resources:
       ServiceName: !Ref EcsServiceName
       Cluster: !Ref MyEcsCluster
       LaunchType: FARGATE
-      DesiredCount: 2
+      DesiredCount: 1
       TaskDefinition: !Ref TaskDefFarget
       NetworkConfiguration:
         AwsvpcConfiguration: 

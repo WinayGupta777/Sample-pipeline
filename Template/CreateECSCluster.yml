@@ -76,7 +76,7 @@ Resources:
       TaskDefinition: !Ref TaskDefFarget
       NetworkConfiguration:
         AwsvpcConfiguration: 
-          AssignPublicIp: DISABLED
+          AssignPublicIp: ENABLED
           SecurityGroups:
            - !Ref SecurityGroupId
           Subnets:
